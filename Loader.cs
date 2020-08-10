@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Microsoft.Build.Locator;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
@@ -15,9 +16,11 @@ namespace SimpleSourceProtector
 {
     class Loader
     {
-        public int Process(string projectPath, string outputPath, bool compileBefore = false, ObfuscationOptions obfuscationOptions = ObfuscationOptions.ALL, bool single = true, bool minify = true)
+        public int Process(string projectPath, string outputPath, bool compileBefore = false, ObfuscationOptions obfuscationOptions = ObfuscationOptions.METHODS, bool single = true, bool minify = true)
         {
-            #region Creating new project from exist
+
+            // MSBuildLocator.RegisterDefaults();
+          #region Creating new project from exist
             MSBuildWorkspace workspace = MSBuildWorkspace.Create();
             string projName = "ObfuscatedProject";
             var projectId = ProjectId.CreateNewId();
@@ -107,7 +110,8 @@ namespace SimpleSourceProtector
                 documents = outSolution.Projects.SelectMany(x => x.Documents).Select(x => x.Id).ToList();
 
             }
-
+            /*
+             * Removed due to instant failure
             using (Watcher.Start(ts => Console.WriteLine("Post compilling took: " + ts.ToString() + "\n")))
             {
                 using (var stream = new MemoryStream())
@@ -122,6 +126,7 @@ namespace SimpleSourceProtector
                         return 3;
                 }
             }
+            */
             #endregion
 
             #region Writing to output new project with deformating

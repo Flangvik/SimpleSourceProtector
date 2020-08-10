@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Build.Locator;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -20,6 +21,9 @@ namespace SimpleSourceProtector
 
         static void Main(string[] args)
         {
+            MSBuildLocator.RegisterDefaults();
+
+
             HashSet<string> m_allowed = new HashSet<string> { "h", "c", "n", "m", "dm", "rc", "rm", "rv", "ro", "rf" };
             Dictionary<string, string> arguments = new Dictionary<string, string>();
             int i = 0;
@@ -49,11 +53,11 @@ namespace SimpleSourceProtector
             string projectPath = arguments["arg0"];
             string outputPath = (arguments.ContainsKey("arg1")) ? arguments["arg1"] : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "output");
 
-            bool checkCompilation = (arguments.ContainsKey("c")) ? true : false;
+            bool checkCompilation = (arguments.ContainsKey("c")) ? false : true;
             bool single = (arguments.ContainsKey("m")) ? false : true;
             bool minify = (arguments.ContainsKey("dm")) ? false : true;
 
-            ObfuscationOptions obfuscationOptions = (arguments.ContainsKey("n")) ? ObfuscationOptions.NONE : ObfuscationOptions.ALL;
+            ObfuscationOptions obfuscationOptions = (arguments.ContainsKey("n")) ? ObfuscationOptions.NONE : ObfuscationOptions.VARS;
             if (!arguments.ContainsKey("n") && (arguments.ContainsKey("rc") || arguments.ContainsKey("rm") || arguments.ContainsKey("rv") || arguments.ContainsKey("ro") || arguments.ContainsKey("rf")))
             {
                 obfuscationOptions = ObfuscationOptions.NONE;
